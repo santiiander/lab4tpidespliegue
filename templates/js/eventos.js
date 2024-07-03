@@ -1,3 +1,6 @@
+// Función para verificar si existe el token JWT en las cookies
+
+
 // Función para cargar y mostrar eventos
 function loadEventos() {
     fetch('http://127.0.0.1:8000/eventos', {
@@ -23,6 +26,10 @@ function loadEventos() {
                     <td>${evento.id}</td>
                     <td>${evento.nombre}</td>
                     <td>${evento.fecha_inicio}</td>
+                    <td>${evento.fecha_fin}</td>
+                    <td>${evento.lugar}</td>
+                    <td>${evento.cupos}</td>
+                    <td>${evento.categoria_id}</td> <!-- Verificar si evento.categoria está definido -->
                     <td>
                         <button type="button" class="btn btn-info btn-sm" onclick="editEvento(${evento.id})">Editar</button>
                         <button type="button" class="btn btn-danger btn-sm" onclick="deleteEvento(${evento.id})">Eliminar</button>
@@ -36,7 +43,7 @@ function loadEventos() {
         console.error('Error al cargar eventos:', error);
     });
 
-    // Cargar opciones del select de categorías
+    // Cargar opciones del select de categorías al mismo tiempo
     loadCategorias();
 }
 
@@ -70,11 +77,11 @@ function loadCategorias() {
 }
 
 // Función para guardar un nuevo evento o editar uno existente
-// Función para guardar un evento (POST para crear, PUT para editar)
 function guardarEvento(event) {
     event.preventDefault();
 
     // Obtener valores del formulario
+    const id = document.getElementById('eventoId').value;
     const nombre = document.getElementById('eventoNombre').value;
     const descripcion = document.getElementById('eventoDescripcion').value;
     const fechaInicio = document.getElementById('eventoFechaInicio').value;
@@ -83,12 +90,9 @@ function guardarEvento(event) {
     const cupos = parseInt(document.getElementById('eventoCupos').value);
     const categoriaId = parseInt(document.getElementById('eventoCategoria').value);
 
-    // Generar un id aleatorio para nuevos eventos
-    const id = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
-
     // Objeto con los datos del evento
     const eventoData = {
-        id: id, // Usar el id generado para nuevos eventos
+        id: id ? parseInt(id) : Math.floor(Math.random() * (100000 - 100 + 1)) + 100, // Generar un id aleatorio para nuevos eventos
         nombre: nombre,
         descripcion: descripcion,
         fecha_inicio: fechaInicio,
@@ -97,18 +101,11 @@ function guardarEvento(event) {
         cupos: cupos,
         categoria_id: categoriaId
     };
- 
-    // Determinar si es una solicitud POST o PUT
-    let url = 'http://127.0.0.1:8000/eventos';
-    let method = 'POST';
 
-    // Verificar si hay un id existente para actualizar (PUT)
-    const eventoId = document.getElementById('eventoId').value;
-    if (eventoId) {
-        url += `/${eventoId}`;
-        method = 'PUT';
-    }
-   
+    // Determinar si es una solicitud POST o PUT
+    let url = id ? `http://127.0.0.1:8000/eventos/${id}` : 'http://127.0.0.1:8000/eventos';
+    let method = id ? 'PUT' : 'POST';
+
     // Enviar datos al backend mediante una solicitud POST o PUT
     fetch(url, {
         method: method,
@@ -132,11 +129,10 @@ function guardarEvento(event) {
     });
 }
 
-
 // Función para eliminar un evento
 function deleteEvento(id) {
     if (confirm('¿Estás seguro de que quieres eliminar este evento?')) {
-        fetch(`http://127.0.0.1:8000/evento/${id}`, {
+        fetch(`http://127.0.0.1:8000/eventos/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${getToken()}` // Añadir token JWT a la cabecera
@@ -193,14 +189,6 @@ function editEvento(id) {
     });
 }
 
-// Función para limpiar el formulario de eventos
-function resetForm() {
-    document.getElementById('eventoForm').reset();
-    document.getElementById('eventoId').value = ''; // Limpiar el campo oculto de ID
-    const modalTitle = document.getElementById('eventoModalLabel');
-    modalTitle.textContent = 'Agregar Evento';
-}
-
 // Función para obtener el token JWT almacenado en las cookies
 function getToken() {
     const cookies = document.cookie.split(';');
@@ -212,8 +200,16 @@ function getToken() {
     }
     return '';
 }
-
+function checkTokenAndLoad() {
+    const token = getToken();
+    if (!token) {
+        // Redirigir al usuario al login si no hay token
+        window.location.href = '/templates/login.html'; // Ajusta la ruta según tu aplicación
+    } else {
+        loadEventos(); // Cargar los eventos si hay un token válido
+    }
+}
 // Cargar eventos y categorías al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    loadEventos();
+    checkTokenAndLoad();
 });

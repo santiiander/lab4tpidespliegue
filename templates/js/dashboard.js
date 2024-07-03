@@ -1,4 +1,14 @@
+// Función para verificar si existe el token JWT en las cookies
+function checkTokenAndLoad() {
+    const token = getToken();
+    if (!token) {
+        // Redirigir al usuario al login si no hay token
+        window.location.href = '/templates/login.html'; // Ajusta la ruta según tu aplicación
+    } 
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    checkTokenAndLoad(); // Verificar token al cargar la página
     // Obtener y mostrar el token JWT
     const token = getToken();
 
@@ -24,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => {
         console.error('Error al cargar la cantidad de eventos:', error);
-        alert('Ocurrió un error al cargar la cantidad de eventos');
+        //alert('Ocurrió un error al cargar la cantidad de eventos');
     });
 
     // Fetch para obtener las inscripciones activas
@@ -49,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => {
         console.error('Error al cargar las inscripciones activas:', error);
-        alert('Ocurrió un error al cargar las inscripciones activas');
+        //alert('Ocurrió un error al cargar las inscripciones activas');
     });
 
     // Fetch para obtener el promedio de usuarios por evento
@@ -74,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => {
         console.error('Error al cargar el promedio de usuarios por evento:', error);
-        alert('Ocurrió un error al cargar el promedio de usuarios por evento');
+        //alert('Ocurrió un error al cargar el promedio de usuarios por evento');
     });
 
     // Fetch para obtener el evento con más inscripciones
@@ -101,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => {
         console.error('Error al cargar el evento con más inscripciones:', error);
-        alert('Ocurrió un error al cargar el evento con más inscripciones');
+        //alert('Ocurrió un error al cargar el evento con más inscripciones');
     });
 });
 

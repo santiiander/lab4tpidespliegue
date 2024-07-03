@@ -29,7 +29,7 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    <a class="nav-link" href="#" onclick="logout()">Cerrar sesión</a>
                 </li>
             </ul>
         </div>
@@ -43,6 +43,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Email</th>
+                    <th>Rol</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -82,7 +83,6 @@
                         </div>
                         <div class="form-group">
                             <label for="usuarioPassword">Contraseña</label>
-                            <small id="passwordHelp" class="form-text text-muted">La contraseña debe tener al menos 8 caracteres y 1 numero.</small>
                             <input type="password" class="form-control" id="usuarioPassword" minlength="8" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -96,7 +96,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Script personalizado para manejar el formulario de usuarios -->
-    <script src="/templates/js/usuarios.js"></script>
+    <script src="/templates/js/usuarios.js"></script> <!-- Asegúrate de que la ruta sea correcta -->
+    <script src="/templates/js/logout.js"></script>
 </body>
 </html>

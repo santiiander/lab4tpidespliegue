@@ -29,21 +29,21 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    <a class="nav-link" href="#" onclick="logout()">Cerrar sesión</a>
                 </li>
             </ul>
         </div>
     </nav>
     <div class="container mt-4">
         <h2>Inscripciones</h2>
-        <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#inscripcionModal">Agregar Inscripción</button>
+        <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#inscripcionModal" id="agregarInscripcionBtn">Agregar Inscripción</button>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Usuario</th>
-                    <th>Evento</th>
-                    <th>Fecha</th>
+                    <th>Evento ID</th>
+                    <th>Usuario ID</th>
+                    <th>Fecha Inscripción</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -54,27 +54,28 @@
     </div>
     
     <!-- Inscripcion Modal -->
-    <div class="modal fade" id="inscripcionModal" tabindex="-1" role="dialog" aria-labelledby="inscripcionModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="inscripcionModal" tabindex="-1" aria-labelledby="inscripcionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="inscripcionModalLabel">Agregar Inscripción</h5>
+                    <h5 class="modal-title" id="inscripcionModalLabel">Crear Inscripción</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="inscripcionForm">
+                    <form id="inscripcionForm" data-action="crear">
+                        <input type="hidden" id="inscripcionId">
                         <div class="form-group">
-                            <label for="inscripcionUsuario">Usuario</label>
-                            <input type="text" class="form-control" id="inscripcionUsuario" required>
+                            <label for="inscripcionUsuarioId">Usuario ID</label>
+                            <input type="text" class="form-control" id="inscripcionUsuarioId" required>
                         </div>
                         <div class="form-group">
-                            <label for="inscripcionEvento">Evento</label>
-                            <input type="text" class="form-control" id="inscripcionEvento" required>
+                            <label for="inscripcionEventoId">Evento ID</label>
+                            <input type="text" class="form-control" id="inscripcionEventoId" required>
                         </div>
                         <div class="form-group">
-                            <label for="inscripcionFecha">Fecha</label>
+                            <label for="inscripcionFecha">Fecha de Inscripción</label>
                             <input type="date" class="form-control" id="inscripcionFecha" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -83,9 +84,13 @@
             </div>
         </div>
     </div>
+    
+ 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/templates/js/inscripciones.js"></script>
+    <script src="/templates/js/logout.js"></script>
 </body>
 </html>

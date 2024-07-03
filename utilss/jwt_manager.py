@@ -1,4 +1,4 @@
-from jwt import decode, encode
+from jwt import encode, decode
 from datetime import datetime, timedelta
 import jwt
 

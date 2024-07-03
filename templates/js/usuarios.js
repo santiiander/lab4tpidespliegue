@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    listarUsuarios();
+    checkTokenAndLoad(); // Verificar token al cargar la página
 });
 
 const token = getCookie('token'); // Suponiendo que el token JWT está almacenado en una cookie llamada 'token'
@@ -12,6 +12,17 @@ function getCookie(name) {
     } else {
         console.log('Cookie no encontrada');
         return null;
+    }
+}
+
+// Función para verificar si existe el token JWT en las cookies
+function checkTokenAndLoad() {
+    const token = getCookie('token');
+    if (!token) {
+        // Redirigir al usuario al login si no hay token
+        window.location.href = '/templates/login.html'; // Ajusta la ruta según tu aplicación
+    } else {
+        listarUsuarios(); // Cargar usuarios si hay un token válido
     }
 }
 
@@ -46,6 +57,7 @@ async function listarUsuarios() {
                 <td>${usuario.id}</td>
                 <td>${usuario.nombre}</td>
                 <td>${usuario.email}</td>
+                <td>${usuario.rol}</td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editarUsuario(${usuario.id})">Editar</button>
                     <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
