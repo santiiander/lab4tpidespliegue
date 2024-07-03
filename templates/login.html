@@ -3,55 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de sesión</title>
-    <link rel="stylesheet" href="/styles/loginstyle.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
-        <img src="/resources/516ea44d-e011-4915-a0df-5fb5eac6e218.jpg" alt="Logo">
-        <h2>Inicio de sesión</h2>
-        <form id="login-form">
+        <h2>Login</h2>
+        <form id="loginForm">
             <div class="form-group">
-                <label for="email" class="label">Email:</label>
+                <label for="email">Email:</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="password" class="label">Password:</label>
+                <label for="password">Password:</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#login-form').on('submit', function(event) {
-                event.preventDefault();
-                const email = $('#email').val();
-                const password = $('#password').val();
-
-                $.ajax({
-                    url: 'http://127.0.0.1:8000/login',  // Asegúrate de que esta URL coincida con la ruta de tu backend
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ email: email, password: password }),
-                    success: function(response) {
-                        document.cookie = "token=" + response.token + "; path=/";
-                        alert("Inicio de sesion correcto!!");
-                        alert(document.cookie)
-                        //window.location.href = "index_completo.html";
-                        // Redirigir al usuario a otra página si es necesario
-
-                        window.location.href = 'dashboard.html';
-                        
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Credenciales Incorrectas: " + xhr.responseJSON.detail);
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="js/login.js"></script> <!-- Incluir el archivo JavaScript externo -->
 </body>
 </html>

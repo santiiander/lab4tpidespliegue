@@ -69,7 +69,11 @@ class EventoService():
             query = query.filter(EventoModel.descripcion.ilike(f"%{descripcion}%"))
         
         return query.all()
-    
-    def get_eventos_cant_eventos(self):
-        result = self.db.query(EventoModel).count()
-        return result
+
+    def get_eventos_cant_eventos(self,cantidad):
+        try:
+            result = self.db.query(EventoModel).count()
+            return result
+        except Exception as e:
+            print(f"Error en get_eventos_cant_eventos: {e}")
+            return None
