@@ -18,7 +18,7 @@ database = databases.Database(DATABASE_URL)
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(dependencies=[Depends(JWTBearer())])
+app = FastAPI()
 app.title = "TPI Lab IV Grupo-"
 
 # Agregar middleware para manejo de errores
@@ -41,9 +41,17 @@ app.add_middleware(
     allow_headers=["*"],  # Permitir todos los encabezados
 )
 
-# Incluir routers
-app.include_router(userauth_router)
-app.include_router(categoria_router)
-app.include_router(usuario_router)
-app.include_router(evento_router)
-app.include_router(inscripcion_router)
+# Configuración de Jinja2 Templates
+templates = Jinja2Templates(directory="templates")
+
+# Ruta para renderizar una plantilla sin autenticación
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+# Incluir routers con JWTBearer en las rutas que requieren autenticación
+app.include_router(userauth_router, dependencies=[Depends(JWTBearer())])
+app.include_router(categoria_router, dependencies=[Depends(JWTBearer())])
+app.include_router(usuario_router, dependencies=[Depends(JWTBearer())])
+app.include_router(evento_router, dependencies=[Depends(JWTBearer())])
+app.include_router(inscripcion_router, dependencies=[Depends(JWTBearer())])
