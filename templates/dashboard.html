@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="/styles/dashboardstyle.css">
+<head>
+    <title>Dashboard</title>
+    
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div class="dashboard">
+        <div class="card">
+            <h2>Total Eventos</h2>
+            <p>{{ total_eventos }}</p>
+        </div>
+        <div class="card">
+            <h2>Total Inscripciones</h2>
+            <p>{{ total_inscripciones }}</p>
+        </div>
+        <div class="card">
+            <h2>Promedio Usuarios por Evento</h2>
+            <p>{{ promedio_usuarios }}</p>
+        </div>
+        <div class="card">
+            <h2>Evento con más Inscripciones</h2>
+            {% if evento_max_inscripciones %}
+                <p>Evento ID: {{ evento_max_inscripciones.evento_id }}</p>
+                <p>Inscripciones: {{ evento_max_inscripciones.count }}</p>
+            {% else %}
+                <p>No data available</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+# Entorno virtual
+venv/
+.env/
+lib/
+include/
+Scripts/
+pyenv.cfg
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de configuración de IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de configuración del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log
+
+# Archivos de entorno
+.env
+*.env
+
+# Archivos de base de datos
+*.sqlite3
+
+# Archivos de Jupyter Notebook
+.ipynb_checkpoints/
+
+# Archivos de caché de pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Archivos creados por tests
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Distribución / Paquetes
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage reports
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+config/database.py
