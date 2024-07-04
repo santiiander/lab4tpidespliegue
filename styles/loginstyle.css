@@ -1,5 +1,5 @@
 body {
-    background-color: #000;
+    background-color: #c4bbbb;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,25 +7,27 @@ body {
     margin: 0;
 }
 
-.card {
-    background-color: #333;
+.container {
+    max-width: 450px;
+    background-color: #4d2e2e;
     padding: 20px;
     border-radius: 10px;
     color: #fff;
-    max-width: 500px; /* Ancho máximo de la tarjeta */
-    width: 100%; /* Para asegurar que la tarjeta ocupe el ancho máximo disponible */
-    margin: auto; /* Centrar la tarjeta */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-.card img {
-    width: 783px;
+.container img {
+    width: 200px;
     display: block;
     margin: 0 auto 20px auto;
-    border: white 2px solid;
+
+}
+img{
+    border: solid black 3px;
 }
 
-.card h2 {
-    text-align: center;
+.container h2 {
     margin-bottom: 20px;
 }
 
@@ -34,8 +36,8 @@ body {
 }
 
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #9c8b8b;
+    border-color: #526880;
 }
 
 .btn-primary:hover {

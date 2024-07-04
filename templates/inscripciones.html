@@ -36,6 +36,17 @@
     </nav>
     <div class="container mt-4">
         <h2>Inscripciones</h2>
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <input type="text" id="usuarioIdBusqueda" class="form-control" placeholder="Buscar inscripciones por Usuario ID">
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary" onclick="buscarInscripciones()">Buscar Historial</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary" onclick="buscarInscripcionesActivas()">Buscar Activas</button>
+            </div>
+        </div>
         <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#inscripcionModal" id="agregarInscripcionBtn">Agregar Inscripción</button>
         <table class="table table-striped">
             <thead>
@@ -85,8 +96,6 @@
         </div>
     </div>
     
- 
-
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

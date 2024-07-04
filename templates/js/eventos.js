@@ -1,5 +1,14 @@
 // Función para verificar si existe el token JWT en las cookies
-
+function getToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'token') {
+            return value;
+        }
+    }
+    return '';
+}
 
 // Función para cargar y mostrar eventos
 function loadEventos() {
@@ -15,29 +24,7 @@ function loadEventos() {
         return response.json();
     })
     .then(data => {
-        // Limpiar tabla antes de agregar datos nuevos
-        const tableBody = document.getElementById('eventoTableBody');
-        tableBody.innerHTML = '';
-
-        // Agregar cada evento a la tabla
-        data.forEach(evento => {
-            const row = `
-                <tr>
-                    <td>${evento.id}</td>
-                    <td>${evento.nombre}</td>
-                    <td>${evento.fecha_inicio}</td>
-                    <td>${evento.fecha_fin}</td>
-                    <td>${evento.lugar}</td>
-                    <td>${evento.cupos}</td>
-                    <td>${evento.categoria_id}</td> <!-- Verificar si evento.categoria está definido -->
-                    <td>
-                        <button type="button" class="btn btn-info btn-sm" onclick="editEvento(${evento.id})">Editar</button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteEvento(${evento.id})">Eliminar</button>
-                    </td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
+        renderEventos(data);
     })
     .catch(error => {
         console.error('Error al cargar eventos:', error);
@@ -45,6 +32,34 @@ function loadEventos() {
 
     // Cargar opciones del select de categorías al mismo tiempo
     loadCategorias();
+}
+
+// Función para renderizar eventos en la tabla
+function renderEventos(eventos) {
+    const tableBody = document.getElementById('eventoTableBody');
+    tableBody.innerHTML = '';
+
+    eventos.forEach(evento => {
+        //const categoriaNombre = evento.categoria ? evento.categoria.nombre : 'Sin categoría'; // Verificar si evento.categoria está definido
+
+        const row = `
+            <tr>
+                <td>${evento.id}</td>
+                <td>${evento.nombre}</td>
+                <td>${evento.descripcion}</td>
+                <td>${evento.fecha_inicio}</td>
+                <td>${evento.fecha_fin}</td>
+                <td>${evento.lugar}</td>
+                <td>${evento.cupos}</td>
+                <td>${evento.categoria_id}</td> <!-- Mostrar nombre de la categoría -->
+                <td>
+                    <button type="button" class="btn btn-info btn-sm" onclick="editEvento(${evento.id})">Editar</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteEvento(${evento.id})">Eliminar</button>
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
 }
 
 // Función para cargar opciones del select de categorías
@@ -61,14 +76,29 @@ function loadCategorias() {
         return response.json();
     })
     .then(data => {
-        const selectCategoria = document.getElementById('eventoCategoria');
-        selectCategoria.innerHTML = ''; // Limpiar opciones actuales
+        const selectCategoriaFilter = document.getElementById('categoriaFilter');
+        const selectCategoriaEvento = document.getElementById('eventoCategoria');
 
+        selectCategoriaFilter.innerHTML = ''; // Limpiar opciones actuales
+        selectCategoriaEvento.innerHTML = ''; // Limpiar opciones actuales
+
+        // Añadir opción por defecto al filtro
+        const defaultOptionFilter = document.createElement('option');
+        defaultOptionFilter.value = '';
+        defaultOptionFilter.textContent = 'Todas las categorías';
+        selectCategoriaFilter.appendChild(defaultOptionFilter);
+
+        // Añadir opciones al select de categoría en el formulario de evento
         data.forEach(categoria => {
-            const option = document.createElement('option');
-            option.value = categoria.id;
-            option.textContent = categoria.nombre;
-            selectCategoria.appendChild(option);
+            const optionFilter = document.createElement('option');
+            optionFilter.value = categoria.id;
+            optionFilter.textContent = categoria.nombre;
+            selectCategoriaFilter.appendChild(optionFilter);
+
+            const optionEvento = document.createElement('option');
+            optionEvento.value = categoria.id;
+            optionEvento.textContent = categoria.nombre;
+            selectCategoriaEvento.appendChild(optionEvento);
         });
     })
     .catch(error => {
@@ -76,12 +106,36 @@ function loadCategorias() {
     });
 }
 
-// Función para guardar un nuevo evento o editar uno existente
+// Función para filtrar eventos por categoría
+function filterByCategoria() {
+    const categoriaId = document.getElementById('categoriaFilter').value;
+    const url = categoriaId ? `http://127.0.0.1:8000/eventos/categoria/${categoriaId}` : 'http://127.0.0.1:8000/eventos';
+
+    fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${getToken()}` // Obtener token JWT y añadirlo a la cabecera
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        renderEventos(data);
+    })
+    .catch(error => {
+        console.error('Error al filtrar eventos:', error);
+    });
+}
+
+// Función para guardar un evento (crear o actualizar)
+// Función para guardar un evento (crear o actualizar)
 function guardarEvento(event) {
     event.preventDefault();
 
     // Obtener valores del formulario
-    const id = document.getElementById('eventoId').value;
     const nombre = document.getElementById('eventoNombre').value;
     const descripcion = document.getElementById('eventoDescripcion').value;
     const fechaInicio = document.getElementById('eventoFechaInicio').value;
@@ -90,9 +144,12 @@ function guardarEvento(event) {
     const cupos = parseInt(document.getElementById('eventoCupos').value);
     const categoriaId = parseInt(document.getElementById('eventoCategoria').value);
 
+    // Generar un id aleatorio para nuevos eventos
+    const id = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+
     // Objeto con los datos del evento
     const eventoData = {
-        id: id ? parseInt(id) : Math.floor(Math.random() * (100000 - 100 + 1)) + 100, // Generar un id aleatorio para nuevos eventos
+        id: id, // Usar el id generado para nuevos eventos
         nombre: nombre,
         descripcion: descripcion,
         fecha_inicio: fechaInicio,
@@ -101,11 +158,18 @@ function guardarEvento(event) {
         cupos: cupos,
         categoria_id: categoriaId
     };
-
+ 
     // Determinar si es una solicitud POST o PUT
-    let url = id ? `http://127.0.0.1:8000/eventos/${id}` : 'http://127.0.0.1:8000/eventos';
-    let method = id ? 'PUT' : 'POST';
+    let url = 'http://127.0.0.1:8000/eventos';
+    let method = 'POST';
 
+    // Verificar si hay un id existente para actualizar (PUT)
+    const eventoId = document.getElementById('eventoId').value;
+    if (eventoId) {
+        url += `/${eventoId}`;
+        method = 'PUT';
+    }
+   
     // Enviar datos al backend mediante una solicitud POST o PUT
     fetch(url, {
         method: method,
@@ -129,10 +193,12 @@ function guardarEvento(event) {
     });
 }
 
+
+
 // Función para eliminar un evento
 function deleteEvento(id) {
     if (confirm('¿Estás seguro de que quieres eliminar este evento?')) {
-        fetch(`http://127.0.0.1:8000/eventos/${id}`, {
+        fetch(`http://127.0.0.1:8000/evento/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${getToken()}` // Añadir token JWT a la cabecera
@@ -152,7 +218,7 @@ function deleteEvento(id) {
     }
 }
 
-// Función para cargar datos de un evento específico en el formulario de edición
+// Función para editar un evento (cargar datos en el formulario)
 function editEvento(id) {
     fetch(`http://127.0.0.1:8000/eventos/${id}`, {
         headers: {
@@ -166,7 +232,6 @@ function editEvento(id) {
         return response.json();
     })
     .then(evento => {
-        // Llenar el formulario con los datos del evento
         document.getElementById('eventoId').value = evento.id;
         document.getElementById('eventoNombre').value = evento.nombre;
         document.getElementById('eventoDescripcion').value = evento.descripcion;
@@ -176,40 +241,67 @@ function editEvento(id) {
         document.getElementById('eventoCupos').value = evento.cupos;
         document.getElementById('eventoCategoria').value = evento.categoria_id;
 
-        // Cambiar título del modal
-        const modalTitle = document.getElementById('eventoModalLabel');
-        modalTitle.textContent = 'Editar Evento';
-
-        // Mostrar modal de edición
         $('#eventoModal').modal('show');
     })
     .catch(error => {
-        console.error('Error al cargar el evento para editar:', error);
-        alert('Error al cargar el evento para editar');
+        console.error('Error al cargar evento:', error);
     });
 }
 
-// Función para obtener el token JWT almacenado en las cookies
-function getToken() {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'token') {
-            return value;
+// Función para resetear el formulario
+function resetForm() {
+    document.getElementById('eventoForm').reset();
+    document.getElementById('eventoId').value = '';
+}
+
+function buscarEventosPorNombre() {
+    const nombre = document.getElementById('nombreBuscar').value;
+    fetch(`http://127.0.0.1:8000/eventos?nombre=${encodeURIComponent(nombre)}`, {
+        headers: {
+            'Authorization': `Bearer ${getToken()}` // Obtener token JWT y añadirlo a la cabecera
         }
-    }
-    return '';
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        renderEventos(data);
+    })
+    .catch(error => {
+        console.error('Error al filtrar eventos:', error);
+    });
 }
-function checkTokenAndLoad() {
-    const token = getToken();
-    if (!token) {
-        // Redirigir al usuario al login si no hay token
-        window.location.href = '/templates/login.html'; // Ajusta la ruta según tu aplicación
-    } else {
-        loadEventos(); // Cargar los eventos si hay un token válido
-    }
+
+function buscarEventosPorDescripcion() {
+    const nombre = document.getElementById('descripcionBuscar').value;
+    fetch(`http://127.0.0.1:8000/eventos?descripcion=${encodeURIComponent(nombre)}`, {
+        headers: {
+            'Authorization': `Bearer ${getToken()}` // Obtener token JWT y añadirlo a la cabecera
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        renderEventos(data);
+    })
+    .catch(error => {
+        console.error('Error al filtrar eventos:', error);
+    });
 }
-// Cargar eventos y categorías al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    checkTokenAndLoad();
+
+function resetFormularioBuscar() {
+    document.getElementById('nombreBuscar').value = '';
+    document.getElementById('descripcionBuscar').value = '';
+    loadEventos();
+}
+// Inicializar carga de eventos y categorías al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    loadEventos();
 });

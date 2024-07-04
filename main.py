@@ -10,7 +10,7 @@ from routers.inscripcion_router import inscripcion_router
 from routers.userauth_router import userauth_router
 from middleware.error_handler import ErrorHandler
 from middleware.jwt_bearer import JWTBearer
-import databases
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -26,6 +26,7 @@ origins = [
     "http://localhost:8000",
     "http://localhost:3000",
     "http://127.0.0.1:5500",
+    "http://127.0.0.1:8000",
     # Agrega aquí otros orígenes permitidos
 ]
 
